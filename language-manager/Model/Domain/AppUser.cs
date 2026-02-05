@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace language_manager.Model.Domain;
 
@@ -11,6 +12,12 @@ namespace language_manager.Model.Domain;
 [PrimaryKey(nameof(UserId), nameof(AppId))]
 public class AppUser
 {
+    /// <summary>
+    /// MongoDB document ID (composite of UserId:AppId)
+    /// </summary>
+    [BsonId]
+    public string Id => $"{UserId}:{AppId}";
+
     /// <summary>
     /// Primary key (part 1), Foreign key to User.
     /// </summary>
@@ -26,6 +33,8 @@ public class AppUser
     public required string Role { get; set; }
 
     // Navigation properties
+    [BsonIgnore]
     public User? User { get; set; }
+    [BsonIgnore]
     public App? App { get; set; }
 }

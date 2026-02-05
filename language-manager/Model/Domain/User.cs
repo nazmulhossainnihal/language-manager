@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace language_manager.Model.Domain;
 
@@ -11,6 +12,7 @@ public class User
     /// Primary key for the user.
     /// </summary>
     [Key]
+    [BsonId]
     public required string UserId { get; init; }
 
     public required string Username { get; set; }
@@ -20,5 +22,6 @@ public class User
     public required string Password { get; set; }
 
     // Navigation properties
+    [BsonIgnore]
     public ICollection<AppUser> AppUsers { get; init; } = new List<AppUser>();
 }

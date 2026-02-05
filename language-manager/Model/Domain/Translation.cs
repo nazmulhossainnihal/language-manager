@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace language_manager.Model.Domain;
 
@@ -12,6 +13,7 @@ public class Translation
     /// Primary key for the translation.
     /// </summary>
     [Key]
+    [BsonId]
     public required string TranslationId { get; init; }
 
     /// <summary>
@@ -39,7 +41,10 @@ public class Translation
     public string? Context { get; set; }
 
     // Navigation properties
+    [BsonIgnore]
     public App? App { get; set; }
+    [BsonIgnore]
     public Module? Module { get; set; }
+    [BsonIgnore]
     public Language? Language { get; set; }
 }
