@@ -1,3 +1,4 @@
+using System.Text;
 using language_manager.Data.Context;
 using language_manager.Data.Migrations;
 using language_manager.Data.Migrations.Migrations;
@@ -6,6 +7,10 @@ using language_manager.Data.Repositories.MongoDB;
 using language_manager.Data.Seeds;
 using language_manager.Data.Seeds.Seeders;
 using language_manager.Data.Settings;
+using language_manager.Services;
+using language_manager.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace language_manager.Extensions;
 
@@ -39,7 +44,43 @@ public static class ServiceCollectionExtensions
 
         // Register seeders
         services.AddScoped<ISeeder, LanguageSeeder>();
+        services.AddScoped<ISeeder, UserSeeder>();
         services.AddScoped<SeederRunner>();
+
+        // Register services
+        services.AddScoped<IPasswordService, PasswordService>();
+        services.AddScoped<IJwtService, JwtService>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
+        var jwtSettings = configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>()!;
+
+        services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtSettings.Issuer,
+                ValidAudience = jwtSettings.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
+                ClockSkew = TimeSpan.Zero
+            };
+        });
+
+        services.AddAuthorization();
 
         return services;
     }
