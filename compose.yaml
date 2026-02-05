@@ -1,0 +1,7 @@
+﻿services:
+  language-manager:
+    image: language-manager
+    build:
+      context: .
+      dockerfile: language-manager/Dockerfile
+
