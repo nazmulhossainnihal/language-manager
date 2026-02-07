@@ -44,8 +44,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IMigration, CreateAppLanguageIndexesMigration>();
         services.AddScoped<MigrationRunner>();
 
-        // Register seeders
-        services.AddScoped<ISeeder, LanguageSeeder>();
+        // Register seeders (UserSeeder always runs; others are registered conditionally in Program.cs)
         services.AddScoped<ISeeder, UserSeeder>();
         services.AddScoped<SeederRunner>();
 
@@ -88,9 +87,9 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Runs database migrations and optionally seeders.
+    /// Runs database migrations and seeders.
     /// </summary>
-    public static async Task<IHost> RunDatabaseMigrationsAsync(this IHost host, bool runSeeders = false)
+    public static async Task<IHost> RunDatabaseMigrationsAsync(this IHost host)
     {
         using var scope = host.Services.CreateScope();
         var services = scope.ServiceProvider;
@@ -102,16 +101,9 @@ public static class ServiceCollectionExtensions
             var migrationRunner = services.GetRequiredService<MigrationRunner>();
             await migrationRunner.RunMigrationsAsync();
 
-            if (runSeeders)
-            {
-                logger.LogInformation("Running database seeders...");
-                var seederRunner = services.GetRequiredService<SeederRunner>();
-                await seederRunner.RunSeedersAsync();
-            }
-            else
-            {
-                logger.LogInformation("Skipping database seeders (non-development environment)");
-            }
+            logger.LogInformation("Running database seeders...");
+            var seederRunner = services.GetRequiredService<SeederRunner>();
+            await seederRunner.RunSeedersAsync();
 
             logger.LogInformation("Database initialization completed successfully");
         }

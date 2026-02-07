@@ -40,7 +40,7 @@ public class UpdateAppUserRoleCommandHandler : IRequestHandler<UpdateAppUserRole
         UserDto? userDto = null;
         if (user != null)
         {
-            userDto = new UserDto(user.UserId, user.Username, user.Email);
+            userDto = new UserDto(user.UserId, user.Email);
         }
 
         var dto = new AppUserDto(appUser.UserId, appUser.AppId, appUser.Role, userDto, null);

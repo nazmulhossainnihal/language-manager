@@ -26,7 +26,7 @@ public class AuthController : BaseController
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
     {
-        var command = new RegisterCommand(request.Username, request.Email, request.Password);
+        var command = new RegisterCommand(request.Email, request.Password);
         var result = await _mediator.Send(command, cancellationToken);
         return HandleResult(result);
     }

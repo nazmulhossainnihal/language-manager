@@ -55,7 +55,7 @@ public class AddUserToAppCommandHandler : IRequestHandler<AddUserToAppCommand, R
 
         await _appUserRepository.AddAsync(appUser, cancellationToken);
 
-        var userDto = new UserDto(user.UserId, user.Username, user.Email);
+        var userDto = new UserDto(user.UserId, user.Email);
         var dto = new AppUserDto(appUser.UserId, appUser.AppId, appUser.Role, userDto, null);
 
         return Result<AppUserDto>.Success(dto, 201);

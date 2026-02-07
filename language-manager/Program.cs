@@ -53,16 +53,17 @@ builder.Services.AddMongoDb(builder.Configuration);
 // Add JWT authentication
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
-// Register dummy data seeder only in development
+// Register additional seeders only in development
 if (builder.Environment.IsDevelopment())
 {
+    builder.Services.AddScoped<ISeeder, LanguageSeeder>();
     builder.Services.AddScoped<ISeeder, DummyDataSeeder>();
 }
 
 var app = builder.Build();
 
-// Run migrations always, seeders only in development
-await app.RunDatabaseMigrationsAsync(runSeeders: app.Environment.IsDevelopment());
+// Run migrations and seeders
+await app.RunDatabaseMigrationsAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

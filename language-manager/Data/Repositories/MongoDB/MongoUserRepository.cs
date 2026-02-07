@@ -19,9 +19,4 @@ public class MongoUserRepository : MongoRepository<User>, IUserRepository
     {
         return await Collection.Find(u => u.Email == email).FirstOrDefaultAsync(cancellationToken);
     }
-
-    public async Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default)
-    {
-        return await Collection.Find(u => u.Username == username).FirstOrDefaultAsync(cancellationToken);
-    }
 }

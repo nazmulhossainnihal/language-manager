@@ -41,7 +41,7 @@ public class UsersController : BaseController
         [FromBody] UpdateUserRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateUserCommand(id, request.Username, request.Email, request.Password);
+        var command = new UpdateUserCommand(id, request.Email, request.Password);
         var result = await _mediator.Send(command, cancellationToken);
         return HandleResult(result);
     }

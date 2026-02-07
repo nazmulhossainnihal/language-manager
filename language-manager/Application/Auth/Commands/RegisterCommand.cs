@@ -7,7 +7,7 @@ using MediatR;
 
 namespace language_manager.Application.Auth.Commands;
 
-public record RegisterCommand(string Username, string Email, string Password) : IRequest<Result<AuthResponse>>;
+public record RegisterCommand(string Email, string Password) : IRequest<Result<AuthResponse>>;
 
 public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<AuthResponse>>
 {
@@ -33,18 +33,11 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Au
             return Result<AuthResponse>.Conflict("A user with this email already exists");
         }
 
-        var existingUserByUsername = await _userRepository.GetByUsernameAsync(request.Username, cancellationToken);
-        if (existingUserByUsername != null)
-        {
-            return Result<AuthResponse>.Conflict("A user with this username already exists");
-        }
-
         var hashedPassword = _passwordService.HashPassword(request.Password);
 
         var user = new User
         {
             UserId = Guid.NewGuid().ToString(),
-            Username = request.Username,
             Email = request.Email,
             Password = hashedPassword
         };
@@ -54,7 +47,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Au
         var accessToken = _jwtService.GenerateAccessToken(user);
         var refreshToken = _jwtService.GenerateRefreshToken();
 
-        var userDto = new UserDto(user.UserId, user.Username, user.Email);
+        var userDto = new UserDto(user.UserId, user.Email);
         var response = new AuthResponse(accessToken, refreshToken, userDto);
 
         return Result<AuthResponse>.Success(response, 201);

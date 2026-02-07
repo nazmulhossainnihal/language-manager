@@ -33,7 +33,7 @@ public class DummyDataSeeder : ISeeder
         var langDe = languages.First(l => l.LanguageKey == "de");
         var langJa = languages.First(l => l.LanguageKey == "ja");
 
-        var adminUser = users.First(u => u.Username == "admin");
+        var adminUser = users.First(u => u.Email == "admin@language-manager");
 
         // --- Apps ---
         var ecommerceApp = new App

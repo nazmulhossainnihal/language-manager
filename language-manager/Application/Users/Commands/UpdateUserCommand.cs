@@ -6,7 +6,7 @@ using MediatR;
 
 namespace language_manager.Application.Users.Commands;
 
-public record UpdateUserCommand(string UserId, string? Username, string? Email, string? Password)
+public record UpdateUserCommand(string UserId, string? Email, string? Password)
     : IRequest<Result<UserDto>>;
 
 public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Result<UserDto>>
@@ -39,16 +39,6 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Resul
             user.Email = request.Email;
         }
 
-        if (!string.IsNullOrEmpty(request.Username) && request.Username != user.Username)
-        {
-            var existingUser = await _userRepository.GetByUsernameAsync(request.Username, cancellationToken);
-            if (existingUser != null)
-            {
-                return Result<UserDto>.Conflict("A user with this username already exists");
-            }
-            user.Username = request.Username;
-        }
-
         if (!string.IsNullOrEmpty(request.Password))
         {
             user.Password = _passwordService.HashPassword(request.Password);
@@ -56,7 +46,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Resul
 
         await _userRepository.UpdateAsync(user.UserId, user, cancellationToken);
 
-        var userDto = new UserDto(user.UserId, user.Username, user.Email);
+        var userDto = new UserDto(user.UserId, user.Email);
         return Result<UserDto>.Success(userDto);
     }
 }

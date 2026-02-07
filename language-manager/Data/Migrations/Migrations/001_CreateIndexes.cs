@@ -37,10 +37,7 @@ public class CreateIndexesMigration : IMigration
         {
             new CreateIndexModel<User>(
                 Builders<User>.IndexKeys.Ascending(u => u.Email),
-                new CreateIndexOptions { Unique = true, Name = "idx_user_email" }),
-            new CreateIndexModel<User>(
-                Builders<User>.IndexKeys.Ascending(u => u.Username),
-                new CreateIndexOptions { Unique = true, Name = "idx_user_username" })
+                new CreateIndexOptions { Unique = true, Name = "idx_user_email" })
         }, cancellationToken);
 
         // App indexes
@@ -120,7 +117,6 @@ public class CreateIndexesMigration : IMigration
         await _context.Languages.Indexes.DropOneAsync("idx_language_name", cancellationToken);
 
         await _context.Users.Indexes.DropOneAsync("idx_user_email", cancellationToken);
-        await _context.Users.Indexes.DropOneAsync("idx_user_username", cancellationToken);
 
         await _context.Apps.Indexes.DropOneAsync("idx_app_domain", cancellationToken);
         await _context.Apps.Indexes.DropOneAsync("idx_app_environment", cancellationToken);
