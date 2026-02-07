@@ -88,9 +88,9 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Runs database migrations and seeders.
+    /// Runs database migrations and optionally seeders.
     /// </summary>
-    public static async Task<IHost> RunDatabaseMigrationsAsync(this IHost host)
+    public static async Task<IHost> RunDatabaseMigrationsAsync(this IHost host, bool runSeeders = false)
     {
         using var scope = host.Services.CreateScope();
         var services = scope.ServiceProvider;
@@ -102,9 +102,16 @@ public static class ServiceCollectionExtensions
             var migrationRunner = services.GetRequiredService<MigrationRunner>();
             await migrationRunner.RunMigrationsAsync();
 
-            logger.LogInformation("Running database seeders...");
-            var seederRunner = services.GetRequiredService<SeederRunner>();
-            await seederRunner.RunSeedersAsync();
+            if (runSeeders)
+            {
+                logger.LogInformation("Running database seeders...");
+                var seederRunner = services.GetRequiredService<SeederRunner>();
+                await seederRunner.RunSeedersAsync();
+            }
+            else
+            {
+                logger.LogInformation("Skipping database seeders (non-development environment)");
+            }
 
             logger.LogInformation("Database initialization completed successfully");
         }

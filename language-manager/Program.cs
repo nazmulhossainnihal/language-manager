@@ -1,4 +1,6 @@
 using System.Reflection;
+using language_manager.Data.Seeds;
+using language_manager.Data.Seeds.Seeders;
 using language_manager.Extensions;
 using Microsoft.OpenApi.Models;
 
@@ -51,10 +53,16 @@ builder.Services.AddMongoDb(builder.Configuration);
 // Add JWT authentication
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
+// Register dummy data seeder only in development
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddScoped<ISeeder, DummyDataSeeder>();
+}
+
 var app = builder.Build();
 
-// Run migrations and seeders
-await app.RunDatabaseMigrationsAsync();
+// Run migrations always, seeders only in development
+await app.RunDatabaseMigrationsAsync(runSeeders: app.Environment.IsDevelopment());
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
