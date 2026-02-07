@@ -37,9 +37,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAppUserRepository, MongoAppUserRepository>();
         services.AddScoped<IModuleRepository, MongoModuleRepository>();
         services.AddScoped<ITranslationRepository, MongoTranslationRepository>();
+        services.AddScoped<IAppLanguageRepository, MongoAppLanguageRepository>();
 
         // Register migrations
         services.AddScoped<IMigration, CreateIndexesMigration>();
+        services.AddScoped<IMigration, CreateAppLanguageIndexesMigration>();
         services.AddScoped<MigrationRunner>();
 
         // Register seeders

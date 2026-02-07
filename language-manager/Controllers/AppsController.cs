@@ -1,3 +1,5 @@
+using language_manager.Application.AppLanguages.Commands;
+using language_manager.Application.AppLanguages.Queries;
 using language_manager.Application.Apps.Commands;
 using language_manager.Application.Apps.Queries;
 using language_manager.Application.AppUsers.Commands;
@@ -112,6 +114,36 @@ public class AppsController : BaseController
         CancellationToken cancellationToken)
     {
         var command = new RemoveUserFromAppCommand(userId, id);
+        var result = await _mediator.Send(command, cancellationToken);
+        return HandleResult(result);
+    }
+
+    [HttpGet("{id}/languages")]
+    public async Task<IActionResult> GetAppLanguages(string id, CancellationToken cancellationToken)
+    {
+        var query = new GetAppLanguagesQuery(id);
+        var result = await _mediator.Send(query, cancellationToken);
+        return HandleResult(result);
+    }
+
+    [HttpPost("{id}/languages")]
+    public async Task<IActionResult> AddLanguageToApp(
+        string id,
+        [FromBody] AddAppLanguageRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new AddAppLanguageCommand(id, request.LanguageId);
+        var result = await _mediator.Send(command, cancellationToken);
+        return HandleResult(result);
+    }
+
+    [HttpDelete("{id}/languages/{languageId}")]
+    public async Task<IActionResult> RemoveLanguageFromApp(
+        string id,
+        string languageId,
+        CancellationToken cancellationToken)
+    {
+        var command = new RemoveAppLanguageCommand(id, languageId);
         var result = await _mediator.Send(command, cancellationToken);
         return HandleResult(result);
     }
