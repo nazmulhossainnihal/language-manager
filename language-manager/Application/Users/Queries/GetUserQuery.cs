@@ -25,7 +25,7 @@ public class GetUserQueryHandler : IRequestHandler<GetUserQuery, Result<UserDto>
             return Result<UserDto>.NotFound("User not found");
         }
 
-        var userDto = new UserDto(user.UserId, user.Username, user.Email);
+        var userDto = new UserDto(user.UserId, user.Email);
         return Result<UserDto>.Success(userDto);
     }
 }

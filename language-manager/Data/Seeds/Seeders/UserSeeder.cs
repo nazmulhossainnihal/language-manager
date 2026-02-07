@@ -31,7 +31,6 @@ public class UserSeeder : ISeeder
             new()
             {
                 UserId = Guid.NewGuid().ToString(),
-                Username = "admin",
                 Email = "admin@language-manager",
                 Password = _passwordService.HashPassword("G$af5223Xpy")
             }

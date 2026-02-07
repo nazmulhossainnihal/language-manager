@@ -24,6 +24,7 @@ public class MongoDbContext
     public IMongoCollection<Language> Languages => _database.GetCollection<Language>("languages");
     public IMongoCollection<Module> Modules => _database.GetCollection<Module>("modules");
     public IMongoCollection<Translation> Translations => _database.GetCollection<Translation>("translations");
+    public IMongoCollection<AppLanguage> AppLanguages => _database.GetCollection<AppLanguage>("app_languages");
 
     public IMongoDatabase Database => _database;
 }

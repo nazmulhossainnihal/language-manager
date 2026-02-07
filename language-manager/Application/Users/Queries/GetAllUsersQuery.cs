@@ -19,7 +19,7 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<
     public async Task<Result<IEnumerable<UserDto>>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
     {
         var users = await _userRepository.GetAllAsync(cancellationToken);
-        var userDtos = users.Select(u => new UserDto(u.UserId, u.Username, u.Email));
+        var userDtos = users.Select(u => new UserDto(u.UserId, u.Email));
         return Result<IEnumerable<UserDto>>.Success(userDtos);
     }
 }

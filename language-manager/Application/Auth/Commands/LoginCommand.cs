@@ -41,7 +41,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<AuthResp
         var accessToken = _jwtService.GenerateAccessToken(user);
         var refreshToken = _jwtService.GenerateRefreshToken();
 
-        var userDto = new UserDto(user.UserId, user.Username, user.Email);
+        var userDto = new UserDto(user.UserId, user.Email);
         var response = new AuthResponse(accessToken, refreshToken, userDto);
 
         return Result<AuthResponse>.Success(response);

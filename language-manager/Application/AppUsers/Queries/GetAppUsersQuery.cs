@@ -42,7 +42,7 @@ public class GetAppUsersQueryHandler : IRequestHandler<GetAppUsersQuery, Result<
             UserDto? userDto = null;
             if (userDict.TryGetValue(au.UserId, out var user))
             {
-                userDto = new UserDto(user.UserId, user.Username, user.Email);
+                userDto = new UserDto(user.UserId, user.Email);
             }
             return new AppUserDto(au.UserId, au.AppId, au.Role, userDto, null);
         });

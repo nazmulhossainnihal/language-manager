@@ -1,4 +1,6 @@
 using System.Reflection;
+using language_manager.Data.Seeds;
+using language_manager.Data.Seeds.Seeders;
 using language_manager.Extensions;
 using Microsoft.OpenApi.Models;
 
@@ -50,6 +52,13 @@ builder.Services.AddMongoDb(builder.Configuration);
 
 // Add JWT authentication
 builder.Services.AddJwtAuthentication(builder.Configuration);
+
+// Register additional seeders only in development
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddScoped<ISeeder, LanguageSeeder>();
+    builder.Services.AddScoped<ISeeder, DummyDataSeeder>();
+}
 
 var app = builder.Build();
 

@@ -12,17 +12,20 @@ public class DeleteAppCommandHandler : IRequestHandler<DeleteAppCommand, Result>
     private readonly IModuleRepository _moduleRepository;
     private readonly ITranslationRepository _translationRepository;
     private readonly IAppUserRepository _appUserRepository;
+    private readonly IAppLanguageRepository _appLanguageRepository;
 
     public DeleteAppCommandHandler(
         IAppRepository appRepository,
         IModuleRepository moduleRepository,
         ITranslationRepository translationRepository,
-        IAppUserRepository appUserRepository)
+        IAppUserRepository appUserRepository,
+        IAppLanguageRepository appLanguageRepository)
     {
         _appRepository = appRepository;
         _moduleRepository = moduleRepository;
         _translationRepository = translationRepository;
         _appUserRepository = appUserRepository;
+        _appLanguageRepository = appLanguageRepository;
     }
 
     public async Task<Result> Handle(DeleteAppCommand request, CancellationToken cancellationToken)
@@ -42,6 +45,9 @@ public class DeleteAppCommandHandler : IRequestHandler<DeleteAppCommand, Result>
 
         // Delete all app-user relationships
         await _appUserRepository.DeleteManyAsync(au => au.AppId == request.AppId, cancellationToken);
+
+        // Delete all app-language relationships
+        await _appLanguageRepository.DeleteManyAsync(al => al.AppId == request.AppId, cancellationToken);
 
         // Delete the app
         await _appRepository.DeleteAsync(request.AppId, cancellationToken);
