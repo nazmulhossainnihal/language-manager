@@ -38,6 +38,18 @@ public class TranslationsController : BaseController
         return HandleResult(result);
     }
 
+    [HttpGet("{appDomain}/{moduleKey}/{languageKey}")]
+    public async Task<IActionResult> GetByModuleAndLanguageKey(
+        string appDomain,
+        string moduleKey,
+        string languageKey,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetTranslationsByModuleAndLanguageKeyQuery(appDomain, moduleKey, languageKey);
+        var result = await _mediator.Send(query, cancellationToken);
+        return HandleResult(result);
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create(
         [FromBody] CreateTranslationRequest request,
